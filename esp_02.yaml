@@ -1,0 +1,51 @@
+substitutions:
+  # Modify variables based on your settings
+  hostname: 'esp_02'
+esphome:
+  name: $hostname
+  platform: ESP8266
+  board: nodemcuv2
+wifi:
+  ssid: !secret wifissid
+  password: !secret wifipass
+  domain: .local
+  ap:
+    ssid: $hostname
+
+logger:
+
+# Enable Home Assistant API
+api:
+  reboot_timeout: 0s
+  password: !secret apipass
+ota:
+  safe_mode: True
+  password: !secret otapass
+
+# Sensors bellow
+text_sensor:
+  - platform: version
+    name: $hostname version
+binary_sensor:
+  - platform: status
+    name: $hostname Status
+sensor:
+  - platform: wifi_signal
+    name: $hostname WiFi Signal Sensor
+    update_interval: 3600s
+  - platform: dht
+    pin: D4
+    model: DHT22
+    update_interval: 300s
+    temperature:
+      name: $hostname Temperature
+      unit_of_measurement: 'C'
+      icon: "mdi:thermometer"
+      accuracy_decimals: 1
+    humidity:
+      name: $hostname Humidity
+      unit_of_measurement: '%'
+      icon: "mdi:water-percent"
+switch:
+  - platform: restart
+    name: $hostname restart
