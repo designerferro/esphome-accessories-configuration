@@ -1,15 +1,18 @@
-substitutions:
-  hostname: 'shelly_01'
 esphome:
-  name: $hostname
+  name: shelly_1
   platform: ESP8266
   board: esp01_1m
+
 wifi:
   ssid: !secret wifissid
   password: !secret wifipass
-  fast_connect: True
+  fast_connect: true
+  domain: .local
   ap:
     ssid: $hostname
+logger:
+
+# Enable Home Assistant API
 api:
   reboot_timeout: 0s
   password: !secret apipass
@@ -17,16 +20,6 @@ ota:
   safe_mode: True
   password: !secret otapass
 
-logger: 
-
-# Sensors
-text_sensor:
-  - platform: version
-    name: $hostname version
-sensor:
-  - platform: wifi_signal
-    name: $hostname WiFi Signal Sensor
-    update_interval: 3600s
 
 # Device Specific Config
 output:
@@ -41,8 +34,6 @@ light:
     id: lightid
 
 binary_sensor:
-  - platform: status
-    name: $hostname Status
   - platform: gpio
     pin:
       number: GPIO5
