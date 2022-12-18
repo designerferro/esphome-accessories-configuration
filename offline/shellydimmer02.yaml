@@ -1,0 +1,56 @@
+substitutions:
+  hostname: 'shellydimmer201'
+esphome:
+  name: $hostname
+  platform: ESP8266
+  board: esp01_1m
+wifi:
+  ssid: !secret wifissid
+  password: !secret wifipass
+  fast_connect: True
+  ap:
+    ssid: $hostname
+api:
+  reboot_timeout: 0s
+  password: !secret apipass
+ota:
+  safe_mode: True
+  password: !secret otapass
+
+#logger: 
+
+# Sensors
+text_sensor:
+  - platform: version
+    name: $hostname version
+sensor:
+  - platform: wifi_signal
+    name: $hostname WiFi Signal Sensor
+    update_interval: 3600s
+
+# Device Specific Config
+external_components:
+  - source:
+      type: git
+      url: https://github.com/designerferro/esphome.src
+      ref: shelly-dimmer
+    components: [ shelly_dimmer ]
+# disable serial, we need this to talk to the co-processor
+logger:
+  baud_rate: 0
+
+# define a light 
+light:
+  - platform: shelly_dimmer
+    id: dimmer
+    name: Dimmer
+    leading_edge: false
+    min_brightness: 0
+    max_brightness: 1000
+    gamma_correct: 1
+    default_transition_length: 1s
+    restore_mode: RESTORE_DEFAULT_OFF
+    
+binary_sensor:
+  - platform: status
+    name: $hostname Status
