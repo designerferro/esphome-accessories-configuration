@@ -1,17 +1,40 @@
 substitutions:
 # Sonoff T1 1CH Module
   hostname: 'sonoff_06'
+  devicename: 'sonoff_06'
+  ssid: !secret wifissid2
+  password: !secret wifipass2
+  otapass: !secret otapass
+  apipass: !secret apipass
 esphome:
-  name: $hostname
+  name: ${devicename}
   platform: ESP8266
   board: esp01_1m
+
 wifi:
-  ssid: !secret wifissid
-  password: !secret wifipass
-  fast_connect: True
+  ssid: ${ssid}
+  password: ${password}
+  power_save_mode: HIGH # for ESP8266 LOW/HIGH are mixed up, esphome/issues/issues/1532
+  manual_ip:
+    static_ip: 192.168.2.17
+    gateway: 192.168.2.1
+    subnet: 255.255.255.0
+    dns1: 8.8.8.8
+    dns2: 8.8.4.4
+  ap:
+    ssid: ${devicename}
+    password: ${password}
+    manual_ip:
+      static_ip: 192.168.100.2
+      gateway: 192.168.100.1
+      subnet: 255.255.255.0
+      dns1: 8.8.8.8
+      dns2: 8.8.4.4
 captive_portal:
 logger:
-
+    level: INFO
+web_server:
+  port: 80
 api:
   reboot_timeout: 0s
   password: !secret apipass
